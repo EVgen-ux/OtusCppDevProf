@@ -2,8 +2,10 @@ name: 'C++ CI'
 
 on:
   push:
+    branches:
+      - HW02
     tags:
-      - 'v0.*' 
+        - 'v0.*' 
 
 jobs:
   build:
@@ -34,6 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: .build/HW02-${GITHUB_REF#refs/tags/v}-Linux.deb
+          asset_path: ./HW02-${GITHUB_REF#refs/tags/v}-Linux.deb
           asset_name: HW02-${GITHUB_REF#refs/tags/v}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
