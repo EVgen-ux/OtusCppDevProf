@@ -3,26 +3,26 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(HW02 VERSION ${PROJECT_VESRION})
+project(HW03 VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
-add_executable(HW02_cli main.cpp)
-add_library(HW02 lib.cpp)
+add_executable(HW03_cli main.cpp)
+add_library(HW03 lib.cpp)
 
-set_target_properties(HW02_cli HW02 PROPERTIES
+set_target_properties(HW03_cli HW03 PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(HW02
+target_include_directories(HW03
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
-target_link_libraries(HW02_cli PRIVATE
-    HW02
+target_link_libraries(HW03_cli PRIVATE
+    HW03
 )
 
 if(WITH_BOOST_TEST)
@@ -41,15 +41,15 @@ if(WITH_BOOST_TEST)
 
     target_link_libraries(test_version
         ${Boost_LIBRARIES}
-        HW02
+        HW03
     )
 endif()
 
 if (MSVC)
-    target_compile_options(HW02_cli PRIVATE
+    target_compile_options(HW03_cli PRIVATE
         /W4
     )
-    target_compile_options(HW02 PRIVATE
+    target_compile_options(HW03 PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
@@ -58,10 +58,10 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(HW02_cli PRIVATE
+    target_compile_options(HW03_cli PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-    target_compile_options(HW02 PRIVATE
+    target_compile_options(HW03 PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
     if(WITH_BOOST_TEST)
@@ -71,7 +71,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS HW02_cli RUNTIME DESTINATION bin)
+install(TARGETS HW03_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
