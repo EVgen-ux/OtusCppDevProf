@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - feature/github_actions
+      - HW04
     tags:
       - 'v0.*' 
 
