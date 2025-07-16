@@ -3,8 +3,6 @@ name: 'C++ CI'
 on:
   push:
     branches:
-      - feature/github_actions
-      - HW03
     tags:
         - 'v0.*' 
 
@@ -37,6 +35,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./HW03-0.0.${{ github.run_number }}-Linux.deb
-          asset_name: HW03-0.0.${{ github.run_number }}-Linux.deb
+          asset_path: ./HW04-0.0.${{ github.run_number }}-Linux.deb
+          asset_name: HW04-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package

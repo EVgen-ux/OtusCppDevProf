@@ -9,20 +9,20 @@ option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
-add_executable(HW03_cli main.cpp)
-add_library(HW03 lib.cpp)
+add_executable(HW04_cli print_ip.cpp)
+add_library(HW04 lib.cpp)
 
-set_target_properties(HW03_cli HW03 PROPERTIES
+set_target_properties(HW04_cli HW04 PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(HW03
+target_include_directories(HW04
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
-target_link_libraries(HW03_cli PRIVATE
-    HW03
+target_link_libraries(HW04_cli PRIVATE
+    HW04
 )
 
 if(WITH_BOOST_TEST)
@@ -41,15 +41,15 @@ if(WITH_BOOST_TEST)
 
     target_link_libraries(test_version
         ${Boost_LIBRARIES}
-        HW03
+        HW04
     )
 endif()
 
 if (MSVC)
-    target_compile_options(HW03_cli PRIVATE
+    target_compile_options(HW04_cli PRIVATE
         /W4
     )
-    target_compile_options(HW03 PRIVATE
+    target_compile_options(HW04 PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
@@ -58,10 +58,10 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(HW03_cli PRIVATE
+    target_compile_options(HW04_cli PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-    target_compile_options(HW03 PRIVATE
+    target_compile_options(HW04 PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
     if(WITH_BOOST_TEST)
@@ -71,7 +71,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS HW03_cli RUNTIME DESTINATION bin)
+install(TARGETS HW04_cli RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
