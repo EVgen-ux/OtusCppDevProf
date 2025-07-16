@@ -3,8 +3,10 @@ name: 'C++ CI'
 on:
   push:
     branches:
+      - master
+      - feature/github_actions
     tags:
-        - 'v0.*' 
+      - 'v0.*' 
 
 jobs:
   build:
