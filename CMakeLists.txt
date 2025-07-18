@@ -3,26 +3,26 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VESRION 0.0.${PATCH_VERSION})
 
-project(HW06 VERSION ${PROJECT_VESRION})
+project(HW07 VERSION ${PROJECT_VESRION})
 
 option(WITH_BOOST_TEST "Whether to build Boost test" ON)
 
 configure_file(version.h.in version.h)
 
-add_executable(HW06_cli matrix.cpp)
-add_library(HW06 lib.cpp)
+add_executable(bulk main.cpp bulk.cpp)
+add_library(HW07 lib.cpp)
 
-set_target_properties(HW06_cli HW06 PROPERTIES
+set_target_properties(bulk HW07 PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
-target_include_directories(HW06
+target_include_directories(HW07
     PRIVATE "${CMAKE_BINARY_DIR}"
 )
 
-target_link_libraries(HW06_cli PRIVATE
-    HW06
+target_link_libraries(bulk PRIVATE
+    HW07
 )
 
 if(WITH_BOOST_TEST)
@@ -41,15 +41,15 @@ if(WITH_BOOST_TEST)
 
     target_link_libraries(test_version
         ${Boost_LIBRARIES}
-        HW06
+        HW07
     )
 endif()
 
 if (MSVC)
-    target_compile_options(HW06_cli PRIVATE
+    target_compile_options(bulk PRIVATE
         /W4
     )
-    target_compile_options(HW06 PRIVATE
+    target_compile_options(HW07 PRIVATE
         /W4
     )
     if(WITH_BOOST_TEST)
@@ -58,10 +58,10 @@ if (MSVC)
         )
     endif()
 else ()
-    target_compile_options(HW06_cli PRIVATE
+    target_compile_options(bulk PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-    target_compile_options(HW06 PRIVATE
+    target_compile_options(HW07 PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
     if(WITH_BOOST_TEST)
@@ -71,7 +71,7 @@ else ()
     endif()
 endif()
 
-install(TARGETS HW06_cli RUNTIME DESTINATION bin)
+install(TARGETS bulk RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
@@ -84,3 +84,6 @@ if(WITH_BOOST_TEST)
     enable_testing()
     add_test(test_version test_version)
 endif()
+
+
+file(COPY "commands.txt" DESTINATION ${CMAKE_BINARY_DIR})
