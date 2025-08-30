@@ -1,27 +1,25 @@
 cmake_minimum_required(VERSION 3.14)
-project(bayan VERSION 1.0.0 LANGUAGES CXX)
 
-# Настройка стандарта C++
+set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
+set(PROJECT_VESRION 0.0.${PATCH_VERSION})
+
+project(HW08 VERSION 1.0.0 LANGUAGES CXX)
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Поиск необходимых пакетов Boost
 find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem system program_options)
 
-# Настройка версии
 configure_file(
     version.h.in
-    ${CMAKE_BINARY_DIR}/version.h
+    version.h
 )
 
-# Основной исполняемый файл
 add_executable(${PROJECT_NAME}
     main.cpp
     bayan.cpp
 )
 
-# Подключаем директории с заголовками
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_BINARY_DIR}
@@ -29,7 +27,6 @@ target_include_directories(${PROJECT_NAME}
         ${Boost_INCLUDE_DIRS}
 )
 
-# Линкуем зависимости
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Boost::filesystem
@@ -37,7 +34,13 @@ target_link_libraries(${PROJECT_NAME}
         Boost::program_options
 )
 
-# Установка исполняемого файла
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
 )
+
+set(CPACK_GENERATOR DEB)
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_CONTACT example@example.com)
+include(CPack)
