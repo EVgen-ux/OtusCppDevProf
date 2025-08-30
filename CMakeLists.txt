@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 3.14)
 
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
-set(PROJECT_VESRION 0.0.${PATCH_VERSION})
+set(PROJECT_VERSION 0.0.${PATCH_VERSION})
 
 project(HW08 VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem system program_options)
+find_package(Boost REQUIRED COMPONENTS filesystem system program_options)
 
 configure_file(
     version.h.in
