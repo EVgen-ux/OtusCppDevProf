@@ -69,4 +69,4 @@ private:
 
 std::unique_ptr<FileHasher> create_hasher(HashAlgorithm algorithm);
 
-} // namespace bayan
+} 
