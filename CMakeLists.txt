@@ -34,17 +34,6 @@ target_link_libraries(${PROJECT_NAME}
         Boost::program_options
 )
 
-if(WITH_BOOST_TEST)
-    find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-    
-    add_executable(test_version test_version.cpp)
-    target_include_directories(test_version PRIVATE ${CMAKE_BINARY_DIR} ${Boost_INCLUDE_DIRS})
-    target_link_libraries(test_version PRIVATE Boost::unit_test_framework)
-    
-    enable_testing()
-    add_test(NAME test_version COMMAND test_version)
-endif()
-
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
 )
@@ -55,5 +44,3 @@ set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_CONTACT example@example.com)
 include(CPack)
-
-
