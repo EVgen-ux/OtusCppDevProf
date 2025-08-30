@@ -12,7 +12,7 @@ sudo apt-get install libboost-all-dev
 Скачайте .deb пакет, соответствующий релизу 0.0.18. Введите следующие команды:
 
 ```
-sudo dpkg -i   HW07-0.0.18-Linux.deb 
+sudo dpkg -i   HW08-0.0.18-Linux.deb 
 ```
 
 ```
