@@ -18,6 +18,25 @@ jobs:
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
       - run: cmake --build .
       - run: cmake --build . --target package
+      - name: List all files to debug
+        run: |
+          echo "=== Current directory contents ==="
+          ls -la
+          echo "=== All .deb files ==="
+          find . -name "*.deb" -type f
+          echo "=== CPack output directory ==="
+          ls -la _CPack_Packages/ || echo "No CPack directory"
+      - name: Find the actual deb file
+        id: find_deb
+        run: |
+          DEB_FILE=$(find . -name "*.deb" -type f | head -n 1)
+          if [ -z "$DEB_FILE" ]; then
+            echo "No deb file found!"
+            exit 1
+          fi
+          echo "Found deb file: $DEB_FILE"
+          echo "DEB_PATH=$DEB_FILE" >> $GITHUB_ENV
+          cp "$DEB_FILE" "./bayan-0.0.${{ github.run_number }}-Linux.deb"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
