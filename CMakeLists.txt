@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
-project(async_bulk VERSION 1.0.0)
+
+set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
+set(PROJECT_VERSION 0.0.${PATCH_VERSION})
+
+project(async_bulk VERSION ${PROJECT_VESRION})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
