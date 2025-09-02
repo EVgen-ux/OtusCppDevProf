@@ -1,7 +1,11 @@
-#include "bulk.h"
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <thread>       
+#include <chrono>       
+
+
+#include <async_bulk/async.h>
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
@@ -18,20 +22,26 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    Bulk bulk(blockSize);
+    auto ctx = AsyncBulk::connect(blockSize);
 
     std::ifstream commandsFile("commands.txt");
     
     if (!commandsFile.is_open()) {
         std::cerr << "Error: Could not open commands.txt\n";
+        AsyncBulk::disconnect(ctx);
         return 1;
     }
 
     std::string command;
 
     while (std::getline(commandsFile, command)) {
-        bulk.processCommand(command);
+        AsyncBulk::receive(ctx, command);
     }
+
+    AsyncBulk::disconnect(ctx);
+    
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    AsyncBulk::shutdown();
 
     return 0;
 }
