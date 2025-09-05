@@ -1,5 +1,5 @@
 #include "../include/async_bulk/async.h"
-#include "../include/async_bulk/bulk.h"  // ← ИСПРАВЛЕНО
+#include "../include/async_bulk/bulk.h"
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -17,9 +17,11 @@ namespace AsyncBulk {
 class AsyncProcessor {
 public:
     AsyncProcessor() : running_(true) {
+        // Запускаем больше потоков для обработки
         console_thread_ = std::thread(&AsyncProcessor::consoleWorker, this);
-        file_threads_.emplace_back(&AsyncProcessor::fileWorker, this);
-        file_threads_.emplace_back(&AsyncProcessor::fileWorker, this);
+        for (int i = 0; i < 4; ++i) {
+            file_threads_.emplace_back(&AsyncProcessor::fileWorker, this);
+        }
     }
     
     ~AsyncProcessor() {
@@ -45,7 +47,6 @@ public:
         if (contexts_.count(id)) {
             contexts_[id]->processCommand(command);
             
-            // Если есть готовые команды для вывода
             auto output = contexts_[id]->getOutput();
             if (!output.empty()) {
                 {
@@ -68,7 +69,6 @@ public:
         if (contexts_.count(id)) {
             contexts_[id]->finalize();
             
-            // Обработать оставшиеся команды
             auto output = contexts_[id]->getOutput();
             if (!output.empty()) {
                 {
@@ -133,7 +133,6 @@ private:
                 auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
                     timestamp.time_since_epoch()) % 1000;
                 
-                // Уникальное имя файла: timestamp + milliseconds + random suffix
                 std::string filename = "bulk_" + std::to_string(time_t) + 
                                       "_" + std::to_string(ms.count()) + 
                                       "_" + std::to_string(dis(gen)) + ".log";
