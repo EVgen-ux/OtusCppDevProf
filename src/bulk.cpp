@@ -9,7 +9,6 @@ Bulk::Bulk(size_t blockSize) : blockSize_(blockSize) {
 void Bulk::processCommand(const std::string& command) {
     if (command == "{") {
         if (dynamicNestingLevel_ == 0) {
-            // Если входим в первый динамический блок, обрабатываем накопленные регулярные команды
             processRegularCommands();
         }
         dynamicNestingLevel_++;
@@ -20,7 +19,6 @@ void Bulk::processCommand(const std::string& command) {
         if (dynamicNestingLevel_ > 0) {
             dynamicNestingLevel_--;
             if (dynamicNestingLevel_ == 0) {
-                // Если вышли из всех динамических блоков, обрабатываем накопленные команды
                 processDynamicCommands();
             }
         }
@@ -28,10 +26,8 @@ void Bulk::processCommand(const std::string& command) {
     }
 
     if (dynamicNestingLevel_ > 0) {
-        // Команды внутри динамических блоков
         dynamicCommands_.push_back(command);
     } else {
-        // Регулярные команды
         regularCommands_.push_back(command);
         if (regularCommands_.size() >= blockSize_) {
             processRegularCommands();
@@ -40,11 +36,9 @@ void Bulk::processCommand(const std::string& command) {
 }
 
 void Bulk::finalize() {
-    if (dynamicNestingLevel_ == 0) {
-        // Если не внутри динамического блока, обрабатываем оставшиеся регулярные команды
+    if (dynamicNestingLevel_ == 0 && !regularCommands_.empty()) {
         processRegularCommands();
     }
-    // Если внутри динамического блока, команды не обрабатываются (по спецификации)
 }
 
 std::vector<std::string> Bulk::getOutput() {
@@ -56,7 +50,6 @@ std::vector<std::string> Bulk::getOutput() {
 void Bulk::processRegularCommands() {
     if (regularCommands_.empty()) return;
     
-    // Формируем вывод из регулярных команд
     readyOutput_ = regularCommands_;
     regularCommands_.clear();
 }

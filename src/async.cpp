@@ -17,7 +17,6 @@ namespace AsyncBulk {
 class AsyncProcessor {
 public:
     AsyncProcessor() : running_(true) {
-        // Запускаем больше потоков для обработки
         console_thread_ = std::thread(&AsyncProcessor::consoleWorker, this);
         for (int i = 0; i < 4; ++i) {
             file_threads_.emplace_back(&AsyncProcessor::fileWorker, this);
@@ -49,15 +48,18 @@ public:
             
             auto output = contexts_[id]->getOutput();
             if (!output.empty()) {
+
+                std::pair<ContextID, std::vector<std::string>> context_output{id, output};
+                
                 {
                     std::lock_guard<std::mutex> console_lock(console_mutex_);
-                    console_queue_.push(output);
+                    console_queue_.push(context_output);
                 }
                 console_cv_.notify_one();
                 
                 {
                     std::lock_guard<std::mutex> file_lock(file_mutex_);
-                    file_queue_.push(output);
+                    file_queue_.push(context_output);
                 }
                 file_cv_.notify_one();
             }
@@ -71,15 +73,17 @@ public:
             
             auto output = contexts_[id]->getOutput();
             if (!output.empty()) {
+                std::pair<ContextID, std::vector<std::string>> context_output{id, output};
+                
                 {
                     std::lock_guard<std::mutex> console_lock(console_mutex_);
-                    console_queue_.push(output);
+                    console_queue_.push(context_output);
                 }
                 console_cv_.notify_one();
                 
                 {
                     std::lock_guard<std::mutex> file_lock(file_mutex_);
-                    file_queue_.push(output);
+                    file_queue_.push(context_output);
                 }
                 file_cv_.notify_one();
             }
@@ -97,10 +101,11 @@ private:
             });
             
             if (!console_queue_.empty()) {
-                auto bulk = console_queue_.front();
+                auto context_output = console_queue_.front();
                 console_queue_.pop();
                 lock.unlock();
                 
+                auto& bulk = context_output.second;
                 std::cout << "bulk: ";
                 for (size_t i = 0; i < bulk.size(); ++i) {
                     if (i != 0) std::cout << ", ";
@@ -124,18 +129,22 @@ private:
             });
             
             if (!file_queue_.empty()) {
-                auto bulk = file_queue_.front();
+                auto context_output = file_queue_.front();
                 file_queue_.pop();
                 lock.unlock();
+                
+                auto& bulk = context_output.second;
+                auto context_id = context_output.first;
                 
                 auto timestamp = std::chrono::system_clock::now();
                 auto time_t = std::chrono::system_clock::to_time_t(timestamp);
                 auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
                     timestamp.time_since_epoch()) % 1000;
                 
-                std::string filename = "bulk_" + std::to_string(time_t) + 
-                                      "_" + std::to_string(ms.count()) + 
-                                      "_" + std::to_string(dis(gen)) + ".log";
+                 std::string filename = "bulk" + std::to_string(context_id) + "_" + 
+                                      std::to_string(time_t) + "_" + 
+                                      std::to_string(ms.count()) + "_" + 
+                                      std::to_string(dis(gen)) + ".log";
                 
                 std::ofstream file(filename);
                 if (file.is_open()) {
@@ -155,11 +164,11 @@ private:
     std::mutex contexts_mutex_;
     std::atomic<ContextID> next_context_id_{1};
     
-    std::queue<std::vector<std::string>> console_queue_;
+    std::queue<std::pair<ContextID, std::vector<std::string>>> console_queue_;
     std::mutex console_mutex_;
     std::condition_variable console_cv_;
     
-    std::queue<std::vector<std::string>> file_queue_;
+    std::queue<std::pair<ContextID, std::vector<std::string>>> file_queue_;
     std::mutex file_mutex_;
     std::condition_variable file_cv_;
     
@@ -183,7 +192,7 @@ void disconnect(ContextID context_id) {
 }
 
 void shutdown() {
-
 }
+
 
 } // namespace AsyncBulk

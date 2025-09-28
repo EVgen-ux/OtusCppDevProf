@@ -57,10 +57,10 @@ bulk_server 9000 3
 Откройте новый терминал и отправляйте команды:
 
 ```
-seq 0 9 | nc localhost 9000
+seq 0 9 | nc localhost 9000 &
 
 # Отправка команд из файла
-nc localhost 9000 < commands.txt
+nc localhost 9000 < commands.txt &
 
 # Одновременная отправка
 seq 0 9 | nc localhost 9000 &
