@@ -64,7 +64,7 @@ nc localhost 9000 < commands.txt &
 
 # Одновременная отправка
 seq 0 9 | nc localhost 9000 &
-seq 10 19 | nc localhost 9000
+seq 10 19 | nc localhost 9000 &
 ```
 
 ### Завершение работы
