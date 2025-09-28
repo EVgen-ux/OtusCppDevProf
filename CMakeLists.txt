@@ -16,6 +16,7 @@ add_executable(GraphicsEditor
     src/main.cpp
     src/core/document.cpp
     src/core/shape.cpp
+    src/core/view.cpp
 )
 
 install(TARGETS GraphicsEditor RUNTIME DESTINATION bin)
