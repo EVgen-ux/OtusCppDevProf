@@ -24,7 +24,7 @@ sudo apt install build-essential cmake libboost-system-dev libsqlite3-dev
 Скачайте .deb пакет, соответствующий релизу. Введите следующие команды:
 
 ```
-sudo dpkg -i  HW011-0.0.X-Linux.deb 
+sudo dpkg -i  HW11-0.0.X-Linux.deb 
 ```
 (где Х - номер релиза)
 
