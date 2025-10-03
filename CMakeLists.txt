@@ -43,9 +43,6 @@ install(TARGETS bulk_demo bulk_client
 )
 
 
-configure_file(commands.txt commands.txt COPYONLY)
-
-
 set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
 set(CPACK_GENERATOR DEB)
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
