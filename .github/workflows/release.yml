@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - feature/github_actions
-      - HW10
+      - HW11
 
 jobs:
   build:
@@ -38,6 +38,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./HW10-0.0.${{ github.run_number }}-Linux.deb
-          asset_name: HW10-0.0.${{ github.run_number }}-Linux.deb
+          asset_path: ./HW11-0.0.${{ github.run_number }}-Linux.deb
+          asset_name: HW11-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
