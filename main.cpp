@@ -52,6 +52,8 @@ int main(int argc, char* argv[]) {
             double mean = sum / count;
             double variance = (sum_squares / count) - (mean * mean);
             
+            if (variance < 0) variance = 0;
+            
             std::cout << "Variance: " << variance << std::endl;
             std::cout << "Standard deviation: " << std::sqrt(variance) << std::endl;
         }

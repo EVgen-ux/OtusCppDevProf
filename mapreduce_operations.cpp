@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <algorithm>
 
-// File operations
 std::vector<std::string> read_file_by_chunks(const std::string& file_name, 
                                            size_t num_chunks) {
     std::ifstream file{file_name};
@@ -12,50 +11,45 @@ std::vector<std::string> read_file_by_chunks(const std::string& file_name,
         throw std::runtime_error("Cannot open file: " + file_name);
     }
 
-    file.seekg(0, std::ios::end);
-    auto file_size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    if (num_chunks == 0) {
-        throw std::invalid_argument("Number of chunks must be positive");
-    }
-
-    std::vector<std::string> chunks;
-    std::vector<std::streampos> boundaries;
-
-
-    auto chunk_size = file_size / num_chunks;
-    for (size_t i = 0; i < num_chunks; ++i) {
-        auto pos = std::min(static_cast<std::streampos>(i * chunk_size), file_size);
-        if (i > 0) {
-            file.seekg(pos);
-            std::string line;
-            std::getline(file, line);
-            pos = file.tellg();
+    // Читаем все строки файла
+    std::vector<std::string> all_lines;
+    std::string line;
+    
+    // Пропускаем заголовок если есть
+    std::getline(file, line);
+    
+    while (std::getline(file, line)) {
+        if (!line.empty()) {
+            all_lines.push_back(line);
         }
-        boundaries.push_back(pos);
     }
-    boundaries.push_back(file_size);
-
-    // Читаем чанки
-    for (size_t i = 0; i < num_chunks; ++i) {
-        auto chunk_start = boundaries[i];
-        auto chunk_end = boundaries[i + 1];
-        auto chunk_length = chunk_end - chunk_start;
-
-        if (chunk_length <= 0) continue;
-
-        file.seekg(chunk_start);
-        std::string chunk(chunk_length, '\0');
-        file.read(&chunk[0], chunk_length);
-        chunks.push_back(std::move(chunk));
-    }
-
     file.close();
+
+    // Равномерно распределяем строки между чанками
+    std::vector<std::string> chunks;
+    size_t total_lines = all_lines.size();
+    
+    if (num_chunks == 0 || total_lines == 0) {
+        return chunks;
+    }
+
+    size_t lines_per_chunk = total_lines / num_chunks;
+    size_t remainder = total_lines % num_chunks;
+
+    size_t line_index = 0;
+    for (size_t i = 0; i < num_chunks; ++i) {
+        size_t chunk_lines = lines_per_chunk + (i < remainder ? 1 : 0);
+        
+        std::stringstream chunk_ss;
+        for (size_t j = 0; j < chunk_lines && line_index < total_lines; ++j, ++line_index) {
+            chunk_ss << all_lines[line_index] << "\n";
+        }
+        chunks.push_back(chunk_ss.str());
+    }
+
     return chunks;
 }
 
-// Map functions
 std::string extract_price(std::string source) {
     std::stringstream ss(source);
     std::string token;
@@ -83,7 +77,6 @@ std::string extract_price_squared(std::string source) {
     }
 }
 
-// Reduce functions
 std::unordered_map<std::string, double> calculate_mean(
     std::forward_list<std::string>::iterator begin,
     std::forward_list<std::string>::iterator end) {
@@ -149,7 +142,6 @@ std::unordered_map<std::string, double> calculate_variance(
     return result;
 }
 
-// Utility functions
 std::forward_list<std::string> merge(
     std::vector<std::forward_list<std::string>> lists) {
     
