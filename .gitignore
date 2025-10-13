@@ -33,5 +33,6 @@
 
 #Folders
 build/
+input/
 .vscode/
 
