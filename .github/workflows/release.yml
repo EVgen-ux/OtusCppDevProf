@@ -18,12 +18,19 @@ jobs:
           submodules: true
       - name: Install dependencies
         run: |
-          udo apt-get update
+          sudo apt-get update
           sudo apt-get install -y libeigen3-dev wget
-          wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.15.0.tar.gz
-          sudo tar -C /usr/local -xzf libtensorflow-cpu-linux-x86_64-2.15.0.tar.gz
-          sudo ldconfig
-          ls -la /usr/local/lib/libtensorflow*
+          if wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.15.0.tar.gz; then
+            sudo tar -C /usr/local -xzf libtensorflow-cpu-linux-x86_64-2.15.0.tar.gz
+            sudo ldconfig
+            ls -la /usr/local/lib/libtensorflow*
+          else
+            echo "Failed to download TensorFlow, trying alternative version..."
+            wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.14.0.tar.gz
+            sudo tar -C /usr/local -xzf libtensorflow-cpu-linux-x86_64-2.14.0.tar.gz
+            sudo ldconfig
+            ls -la /usr/local/lib/libtensorflow*
+          fi
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
       - run: cmake --build .
       - run: cmake --build . --target package
