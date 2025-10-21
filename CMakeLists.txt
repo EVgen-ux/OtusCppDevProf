@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
 set(PROJECT_VERSION 0.0.${PATCH_VERSION})
 
-project(fasion_mnist VERSION ${PROJECT_VERSION})
+project(HW13 VERSION ${PROJECT_VERSION})
 
 find_package(Eigen3 REQUIRED)
 find_library(TENSORFLOW_LIB tensorflow PATHS /usr/local/lib REQUIRED)
