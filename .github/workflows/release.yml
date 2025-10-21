@@ -18,12 +18,12 @@ jobs:
           submodules: true
       - name: Install dependencies
         run: |
-          sudo apt-get update
+          udo apt-get update
           sudo apt-get install -y libeigen3-dev wget
-          # Скачивание и установка TensorFlow C API
-          wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.16.1.tar.gz
-          sudo tar -C /usr/local -xzf libtensorflow-cpu-linux-x86_64-2.16.1.tar.gz
-          sudo ldconfig  
+          wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-linux-x86_64-2.15.0.tar.gz
+          sudo tar -C /usr/local -xzf libtensorflow-cpu-linux-x86_64-2.15.0.tar.gz
+          sudo ldconfig
+          ls -la /usr/local/lib/libtensorflow*
       - run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DWITH_BOOST_TEST=ON
       - run: cmake --build .
       - run: cmake --build . --target package
